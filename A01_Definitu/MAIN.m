@@ -3,7 +3,7 @@
 clear
 close all
 
-%% 1) PREPROCESS
+%% 1) PREPROCESS:
 
 % 1.1 Input data (define your input parameters here)
 data.ni = 2;  % Degrees of freedom per node

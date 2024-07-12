@@ -3,7 +3,7 @@
 clear
 close all
 
-%% 1) PREPROCESS:
+%% 1) PREPROCESS
 
 % 1.1 Input data (define your input parameters here)
 data.ni = 2;  % Degrees of freedom per node
@@ -81,6 +81,10 @@ fel = forceFunction(data,x,Tn,m,Tm);
 
 % 2.2 Assemble global stiffness matrix
 [K,f] = assemblyFunction(data,Td,Kel,fel);
+
+% GlobalStiffnessMatrixComputer class
+K_class = GlobalStiffnessMatrixComputer();
+K_c = K_class.computeGlobalStiffnessMatrix(data.ni,data.nnod,Td,Kel);
 
 % 2.3.1 Apply prescribed DOFs
 [up,vp] = applyBC(data,p);

@@ -1,4 +1,4 @@
-classdef GlobalStiffnessMatrixComputer 
+classdef GlobalStiffnessMatrixComputer < handle
 
     properties (Access = private)
         Kglobal

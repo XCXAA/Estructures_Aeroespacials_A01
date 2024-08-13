@@ -83,8 +83,8 @@ fel = forceFunction(data,x,Tn,m,Tm);
 [K,f] = assemblyFunction(data,Td,Kel,fel);
 
 % GlobalStiffnessMatrixComputer class
-K_class = GlobalStiffnessMatrixComputer();
-K_c = K_class.computeGlobalStiffnessMatrix(data.ni,data.nnod,Td,Kel);
+StiffnessMatrix_class = GlobalStiffnessMatrixComputer();
+K_class = StiffnessMatrix_class.computeGlobalStiffnessMatrix(data.ni,data.nnod,Td,Kel);
 
 % 2.3.1 Apply prescribed DOFs
 [up,vp] = applyBC(data,p);
@@ -92,8 +92,9 @@ K_c = K_class.computeGlobalStiffnessMatrix(data.ni,data.nnod,Td,Kel);
 % 2.3.2 Apply point loads
 f = pointLoads(data,Td,f,F);
 
+solvertype = "Direct";
 % 2.4 Solve system
-[u,r] = solveSystem(data,K,f,up,vp);
+[u,r] = solveSystem(data,K,f,up,vp,solvertype);
 
 % 2.5 Compute stress
 sig = stressFunction(data,x,Tn,m,Tm,Td,u);

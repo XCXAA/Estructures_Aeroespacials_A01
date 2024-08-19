@@ -19,7 +19,8 @@ while sf_min<sf
     f = pointLoads(data,Td,f,F);
     
     % 2.4 Solve system
-    [u,r] = solveSystem(data,K,f,up,vp);
+    solvertype = "Direct";
+    [u,r] = solveSystem(data,K,f,up,vp,solvertype);
     
     % 2.5 Compute stress
     sig = stressFunction(data,x,Tn,m,Tm,Td,u);

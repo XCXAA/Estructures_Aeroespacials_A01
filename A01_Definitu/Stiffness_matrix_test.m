@@ -65,8 +65,14 @@ K_class = StiffnessMatrix_class.computeGlobalStiffnessMatrix(data.ni,data.nnod,T
 
 %% 3) Test
 
+% Standart test
 % Load the matrix K
 load("datas.mat","K");
 
 % Test to ensure that the stiffness matrix has been assembled properly.
 assert(all(K == K_class, 'all'),'The stiffness matrix has not been assembled properly')
+
+% Test following an object-oriented approach
+StiffnessMatrixTest = StiffnessMatrixTestClass();
+Result = StiffnessMatrixTest.testResult(K_class);
+disp(Result);

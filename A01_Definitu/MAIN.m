@@ -1,4 +1,4 @@
-%% STRUCTURAL PROBLEM CODE STRUCTURE
+%% STRUCTURAL PROBLEM CODE STRUCTURE FOLLOWING AN OBJECT-ORIENTED APPROACH
 
 clear
 close all
@@ -209,7 +209,7 @@ fel = forceFunction(data,x_1,Tn_1,m_1,Tm_1);
 f = pointLoads(data,Td_1,f,F_1);
 
 % 2.4 Solve system
-[u_1,r_1] = solveSystem(data,K,f,up,vp);
+[u_1,r_1] = solveSystem(data,K,f,up,vp,solvertype);
 
 % 2.5 Compute stress
 sig_1 = stressFunction(data,x_1,Tn_1,m_1,Tm_1,Td_1,u_1);
@@ -257,7 +257,7 @@ fel = forceFunction(data,x_2,Tn_1,m_1,Tm_1);
 f = pointLoads(data,Td_1,f,F_2);
 
 % 2.4 Solve system
-[u_2,r_2] = solveSystem(data,K,f,up,vp);
+[u_2,r_2] = solveSystem(data,K,f,up,vp,solvertype);
 
 % 2.5 Compute stress
 sig_2 = stressFunction(data,x_2,Tn_1,m_1,Tm_1,Td_1,u_2);

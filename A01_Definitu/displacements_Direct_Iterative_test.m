@@ -110,3 +110,8 @@ assert(all(abs(u_Direct - u_Iterative) < tol , 'all'), 'The displacements using 
 
 % Test to check that the displacements have the expected value using a Direct and an Iterative solver.
 assert(all(abs(u - u_Direct) < tol, 'all'), 'The displacements do not have the expected value using a Direct and an Iterative solver');
+
+% Test following an object-oriented approach
+DisplacementsDITest = DisplacementsDITestClass();
+Result = DisplacementsDITest.testResult(u_Direct, u_Iterative);
+disp(Result);

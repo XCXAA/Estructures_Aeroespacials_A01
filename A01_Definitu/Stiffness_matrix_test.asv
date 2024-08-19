@@ -1,4 +1,4 @@
-%% Total force test
+%% STRUCTURAL PROBLEM  STIFFNESS MATRIX TEST
 
 clear
 close all
@@ -54,47 +54,26 @@ Tm = [% Each row is the material (row number in 'm') associated to each element
     1
 ];
 
-% 1.3 Input boundary conditions
-% Fixed nodes matrix
-p = [% Each row is a prescribed degree of freedom | column_1 = node, column_2 = direction, column_3 = value of prescribed displacement
-    1 1 0
-    1 2 0
-    3 1 0
-    3 2 0
-];
-
-% Point loads matrix
-F = [% Each row is a point force component | column_1 = node, column_2 = direction (1 = x-direction, 2 = y-direction), column_3 = force magnitude
-    2 2 -0.45*75*9.81
-    4 2 -0.5*75*9.81
-    5 2 -0.05*75*9.81
-    5 1 75*2.5
-];
-
 %% 2) SOLVER
 
 % 2.1.1 Compute element stiffness matrices
 Kel = stiffnessFunction(data,x,Tn,m,Tm);
 
-% 2.1.2 Compute element force vectors
-fel = forceFunction(data,x,Tn,m,Tm); 
-
-% 2.2 Assemble global stiffness matrix
-[K,f_test] = assemblyFunction(data,Td,Kel,fel);
-
-% 2.3.2 Apply point loads
-f_test = pointLoads(data,Td,f_test,F);
-
+% GlobalStiffnessMatrixComputer class
+StiffnessMatrix_class = GlobalStiffnessMatrixComputer();
+K_class = StiffnessMatrix_class.computeGlobalStiffnessMatrix(data.ni,data.nnod,Td,Kel);
 
 %% 3) Test
 
-% Load the saved f matrix
-load("datas.mat","f")
+% Standart test
+% Load the matrix K
+load("datas.mat","K");
 
-% Test to ensure that the total force coincides with the expected value.
-assert(all(f_test == f, 'all'),'The total force does not coincide with the expected value')
+% Test to ensure that the stiffness matrix has been assembled properly.
+assert(all(K == K_class, 'all'),'The stiffness matrix has not been assembled properly')
 
 % Test following an object-oriented approach
-TotalForceTest = TotalForceTestClass();
-Result = TotalForceTest.testResult(f_test);
+
+StiffnessMatrixTest = StiffnessMatrixTestClass();
+Result = StiffnessMatrixTest.testResult(K_class);
 disp(Result);

@@ -98,3 +98,7 @@ solvertype = '0';
 
 save('datas.mat', 'u','-append');
 
+% 2.5 Compute stress
+sig = stressFunction(data,x,Tn,m,Tm,Td,u);
+
+save('datas.mat', 'sig','-append');

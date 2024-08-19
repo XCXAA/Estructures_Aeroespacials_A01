@@ -1,4 +1,4 @@
-%% Total force test
+%% Sigma Test
 
 clear
 close all
@@ -80,21 +80,36 @@ Kel = stiffnessFunction(data,x,Tn,m,Tm);
 fel = forceFunction(data,x,Tn,m,Tm); 
 
 % 2.2 Assemble global stiffness matrix
-[K,f_test] = assemblyFunction(data,Td,Kel,fel);
+[K,f] = assemblyFunction(data,Td,Kel,fel);
+
+% GlobalStiffnessMatrixComputer class
+StiffnessMatrix_class = GlobalStiffnessMatrixComputer();
+K_class = StiffnessMatrix_class.computeGlobalStiffnessMatrix(data.ni,data.nnod,Td,Kel);
+
+% 2.3.1 Apply prescribed DOFs
+[up,vp] = applyBC(data,p);
 
 % 2.3.2 Apply point loads
-f_test = pointLoads(data,Td,f_test,F);
+f = pointLoads(data,Td,f,F);
 
+solvertype = "Direct";
+% 2.4 Solve system
+[u,r] = solveSystem(data,K,f,up,vp,solvertype);
+
+% 2.5 Compute stress
+sig_test = stressFunction(data,x,Tn,m,Tm,Td,u);
 
 %% 3) Test
 
 % Load the saved f matrix
-load("datas.mat","f")
+load("datas.mat","sig")
+
+tol = 1e-6; % Define a small tolerance
 
 % Test to ensure that the total force coincides with the expected value.
-assert(all(f_test == f, 'all'),'The total force does not coincide with the expected value')
+assert(all(sig_test - sig < tol, 'all'),'The sigma does not coincide with the expected value')
 
 % Test following an object-oriented approach
-TotalForceTest = TotalForceTestClass();
-Result = TotalForceTest.testResult(f_test);
+SigmaTest = SigmaTestClass();
+Result = SigmaTest.testResult(sig_test);
 disp(Result);

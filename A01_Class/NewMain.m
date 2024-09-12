@@ -1,5 +1,13 @@
 %% STRUCTURAL PROBLEM CODE STRUCTURE FOLLOWING AN OBJECT-ORIENTED APPROACH
 
+% ToDo:
+% - Fora comentaris de les classes
+% - NewMain passar a Class "gegant"
+% - Utilitzar class NewMain a tots els unit tests
+% - Fer dues classes separades per Kelem i Kassembly
+% - Apply BC com una classe separada
+% - Aplicar clean code rules de la wiki de Swan a totes les class (only public methods: constructor + compute)
+
 clear
 %close all
 
@@ -29,8 +37,10 @@ FrameTn = [% column_1 = element node 1 , column_2 = element node 2, ...
 ];
 
 % Data Initialization
-FrameData = DataClass();
-FrameData.Init(ni_wheel, x_frame, FrameTn);
+s.ni = ni_wheel;
+s.x = x_frame;
+s.Tn = FrameTn;
+FrameData = DataClass(s);
 
 % Create degrees of freedom connectivities matrix
 TdClass = connectDOFClass();
@@ -137,8 +147,10 @@ WheelTn = [% column_1 = element node 1 , column_2 = element node 2, ...
 ];
 
 % Data Initialization
-Wheel1Data = DataClass();
-Wheel1Data.Init(ni_wheel, x_wheel1, WheelTn);
+s.ni = ni_wheel;
+s.x = x_wheel1;
+s.Tn = WheelTn;
+Wheel1Data = DataClass(s);
 
 % Create degrees of freedom connectivities matrix
 WheelTd = TdClass.CreateTd(Wheel1Data, WheelTn);
@@ -216,8 +228,10 @@ Plot.plot2DBars(Wheel1Data, x_wheel1, WheelTn, u_wheel1, Wheel1Sigma, WheelScale
 x_wheel2 = NodalCoordinatesMatrix.ComputeMatrix(ni_wheel,WheelRadius,x_frame(3,:),NumBar);
 
 % Data Initialization
-Wheel2Data = DataClass();
-Wheel2Data.Init(ni_wheel, x_wheel2, WheelTn);
+s.ni = ni_wheel;
+s.x = x_wheel2;
+s.Tn = WheelTn;
+Wheel2Data = DataClass(s);
 
 % Point loads matrix
 Wheel2F = [% Each row is a point force component | column_1 = node, column_2 = direction (1 = x-direction, 2 = y-direction), column_3 = force magnitude

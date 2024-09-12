@@ -16,9 +16,9 @@ classdef DataClass < handle
     
     methods (Access = public)
 
-        function Init(obj, ni, x, Tn)
-            obj.InputData(ni,x,Tn);
-            obj.NodalCoordinatesInit();
+        function obj = DataClass(cParams)
+            obj.init(cParams);
+            obj.initializeNodalCoord();
             obj.NodalConnectivitiesInit();
         end
 
@@ -27,13 +27,13 @@ classdef DataClass < handle
 
     methods (Access = private)
 
-        function InputData(obj,ni,x,Tn)
-            obj.NumDOFNode = ni;
-            obj.x = x;
-            obj.Tn = Tn;
+        function init(obj, cParams)
+            obj.NumDOFNode = cParams.ni;
+            obj.x          = cParams.x;
+            obj.Tn         = cParams.Tn;
         end
 
-        function NodalCoordinatesInit(obj)
+        function initializeNodalCoord(obj)
             obj.NumNodes = size(obj.x,1); % Number of nodes 
             obj.NumDim = size(obj.x,2);   % Problem dimension
             obj.TotalNumDOF = obj.NumNodes*obj.NumDOFNode;  % Total number of degrees of freedom

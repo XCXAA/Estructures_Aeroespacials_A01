@@ -29,8 +29,10 @@ Tn = [% column_1 = element node 1 , column_2 = element node 2, ...
 ];
 
 % Data Initialization
-data = DataClass();
-data.Init(ni, x, Tn);
+s.ni = ni;
+s.x = x;
+s.Tn = Tn;
+data = DataClass(s);
 
 % Create degrees of freedom connectivities matrix
 TdClass = connectDOFClass();

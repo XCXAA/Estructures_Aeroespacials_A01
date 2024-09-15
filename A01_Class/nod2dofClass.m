@@ -2,10 +2,8 @@ classdef nod2dofClass < handle
 
     methods (Access = public, Static)
 
-        function I = ReturnI(NumDOFNode,Node,DOF)
-            
-                I = NumDOFNode*Node + DOF - NumDOFNode;
-
+        function I = returnI(numDOFNode,node,DOF)    
+                I = numDOFNode*node + DOF - numDOFNode;
         end
     end
 

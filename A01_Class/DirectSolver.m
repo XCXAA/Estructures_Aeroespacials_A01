@@ -1,15 +1,23 @@
 classdef DirectSolver < Solver
 
     properties (Access = private)
-        Solution
+        solution
     end
 
-    
+    properties (Access = private)
+        LHS
+        RHS
+    end
+
     methods (Access = public)
 
-        function uL = computeSolution(obj, LHS, RHS)
-            obj.SolveEquationDirectly(LHS, RHS);
-            uL = obj.Solution;
+        function obj = DirectSolver(cParams)
+            obj.init(cParams);
+        end
+
+        function uL = computeSolution(obj)
+            obj.solveEquationDirectly();
+            uL = obj.solution;
         end
 
     end
@@ -17,8 +25,13 @@ classdef DirectSolver < Solver
 
     methods (Access = private)
 
-        function SolveEquationDirectly(obj, LHS, RHS)
-            obj.Solution = LHS\RHS;
+        function init(obj,cParams)
+            obj.LHS = cParams.LHS;
+            obj.RHS = cParams.RHS;
+        end
+
+        function solveEquationDirectly(obj)
+            obj.solution = obj.LHS\obj.RHS;
         end
 
     end

@@ -2,15 +2,14 @@ classdef Solver < handle
 
     methods (Access = public, Static)
 
-        function solver = createSolver(solvertype)
+        function solver = createSolver(solvertype,cParams)
             switch solvertype
                 case 'Direct'
-                    solver = DirectSolver();
+                    solver = DirectSolver(cParams);
                 case 'Iterative'
-                    solver = IterativeSolver();
+                    solver = IterativeSolver(cParams);
                 otherwise
                     error('Unknown solver type');
-
             end
         end
 

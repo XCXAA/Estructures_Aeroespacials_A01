@@ -1,21 +1,24 @@
 classdef SigmaTestClass < handle
 
-    properties (Access = private)
-        Message
-        tolerance
+    properties (Access = public)
+        message
     end
 
     properties (Access = private)
-        sig_original
-        sig_test
+        sigOriginal
+        sigTest
+        tolerance
     end
     
     methods (Access = public)
 
-        function Result = testResult(obj, sig_test)
-            obj.init(sig_test);
-            obj.CompareValues();
-            Result = obj.Message;
+        function obj = SigmaTestClass(cParams)
+            obj.init(cParams);
+        end
+
+        function compute(obj)
+            obj.compareValues();
+            disp(obj.message);
         end
 
     end
@@ -23,19 +26,27 @@ classdef SigmaTestClass < handle
 
     methods (Access = private)
 
-        function init(obj,sig_test)
-            load("datas.mat","sig");
-            obj.sig_original = sig;
-            obj.sig_test = sig_test;
+        function init(obj,cParams)
+            obj.saveInput(cParams);
+            obj.loadOriginalSig();
             obj.tolerance = 1e-6;
         end
 
-        function CompareValues(obj)
+        function saveInput(obj,cParams)
+            obj.sigTest = cParams.sig;
+        end
+
+        function loadOriginalSig(obj)
+            load("datas.mat","sig");
+            obj.sigOriginal = sig;
+        end
+
+        function compareValues(obj)
             try
-                assert(all(abs(obj.sig_original - obj.sig_test) < obj.tolerance, 'all'), 'The sigma does not coincide with the expected value.');
-                obj.Message = 'The sigma coincides with the expected value.';
+                assert(all(abs(obj.sigOriginal - obj.sigTest) < obj.tolerance, 'all'), 'The sigma does not coincide with the expected value.');
+                obj.message = 'The sigma coincides with the expected value.';
             catch ME
-                obj.Message = ME.message;
+                obj.message = ME.message;
             end
         end
 

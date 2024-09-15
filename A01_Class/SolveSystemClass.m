@@ -1,33 +1,34 @@
 classdef SolveSystemClass < handle
 
-    properties (Access = private)
+    properties (Access = public)
         u
         r
-        up
-        vp
-        vf
-        NumRowsp
     end
 
     properties (Access = private)
-        NumDOFNode
-        TotalNumDOF
-        p
+        vf
+        params
+    end
+
+    properties (Access = private)
+        totalNumDOF
         K
         solvertype
         f
+        up
+        vp
     end
     
     methods (Access = public)
 
-        function [u,r] = ComputeSolution(obj, data, p, K, f, solvertype)
-            obj.Init(data, p, K, f, solvertype);
-            obj.applyBC();
-            obj.InitBeforeSolveSystem();
-            obj.Solver();
-            u = obj.u;
-            r = obj.r;
-            
+        function obj = SolveSystemClass(cParams)
+            obj.init(cParams); 
+        end
+
+        function computeSolution(obj)
+            obj.calculateLHSRHS();
+            obj.solveU();
+            obj.solveR();
         end
 
     end
@@ -35,44 +36,40 @@ classdef SolveSystemClass < handle
 
     methods (Access = private)
 
-        function Init(obj, data, p, K, f, solvertype)
-            obj.NumDOFNode = data.NumDOFNode;
-            obj.TotalNumDOF = data.TotalNumDOF;
-            obj.p = p;
-            obj.NumRowsp = size(obj.p,1);
-            obj.up = zeros(obj.NumRowsp,1);
-            obj.vp = zeros(obj.NumRowsp,1);
-            obj.K = K;
-            obj.f = f;
-            obj.solvertype = solvertype;
+         function init(obj,cParams)
+            obj.saveInputs(cParams)
+            obj.createVfU();
         end
 
-        function applyBC(obj)
-
-             for iNumRowsp = 1:obj.NumRowsp
-
-                obj.vp(iNumRowsp)=nod2dofClass.ReturnI(obj.NumDOFNode,obj.p(iNumRowsp,1),obj.p(iNumRowsp,2));
-                obj.up(iNumRowsp)=obj.p(iNumRowsp,3);
-            
-            end 
+        function saveInputs(obj,cParams)
+            obj.totalNumDOF = cParams.data.totalNumDOF;
+            obj.K           = cParams.K;
+            obj.f           = cParams.f;
+            obj.solvertype  = cParams.solvertype;
+            obj.vp          = cParams.vp;
+            obj.up          = cParams.up;
         end
 
-        function InitBeforeSolveSystem(obj)
-            
-            obj.vf = setdiff((1:obj.TotalNumDOF)',obj.vp);
-            obj.u = zeros(obj.TotalNumDOF,1);
+        function createVfU(obj)
+            obj.vf = setdiff((1:obj.totalNumDOF)',obj.vp);
+            obj.u = zeros(obj.totalNumDOF,1);
             obj.u(obj.vp) = obj.up;
-
         end
 
-        function Solver(obj)
+        function calculateLHSRHS(obj)
             LHS = obj.K(obj.vf, obj.vf);
             RHS = obj.f(obj.vf) - [obj.K(obj.vf, obj.vp)]*obj.u(obj.vp);
-            solver = Solver.createSolver(obj.solvertype);
-            obj.u(obj.vf) = solver.computeSolution(LHS, RHS);
-        
-            obj.r = [obj.K(obj.vp, :)]*obj.u - obj.f(obj.vp);
-            
+            obj.params.LHS = LHS;
+            obj.params.RHS = RHS;
+        end
+
+        function solveU(obj)
+            solver = Solver.createSolver(obj.solvertype,obj.params);
+            obj.u(obj.vf) = solver.computeSolution();   
+        end
+
+        function solveR(obj)
+            obj.r = [obj.K(obj.vp, :)]*obj.u - obj.f(obj.vp);  
         end
 
     end

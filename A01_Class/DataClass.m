@@ -1,47 +1,39 @@
 classdef DataClass < handle
 
-    properties (Access = private)
-        x
-        Tn
-    end
-
     properties (Access = public)
-        NumDOFNode
-        NumNodes
-        NumDim
-        TotalNumDOF
-        NumElem
-        NumNodesBar
+        numDOFNode
+        numNodes
+        numDim
+        totalNumDOF
+        numElem
+        numNodesBar
     end
     
     methods (Access = public)
 
         function obj = DataClass(cParams)
             obj.init(cParams);
-            obj.initializeNodalCoord();
-            obj.NodalConnectivitiesInit();
         end
 
     end
 
-
     methods (Access = private)
 
         function init(obj, cParams)
-            obj.NumDOFNode = cParams.ni;
-            obj.x          = cParams.x;
-            obj.Tn         = cParams.Tn;
+            obj.numDOFNode = cParams.numDOFNodeWheel;
+            obj.initializeNodalCoord(cParams);
+            obj.initializeNodalConnectivities(cParams);
         end
 
-        function initializeNodalCoord(obj)
-            obj.NumNodes = size(obj.x,1); % Number of nodes 
-            obj.NumDim = size(obj.x,2);   % Problem dimension
-            obj.TotalNumDOF = obj.NumNodes*obj.NumDOFNode;  % Total number of degrees of freedom
+        function initializeNodalCoord(obj,cParams)
+            obj.numNodes     = size(cParams.x,1); 
+            obj.numDim       = size(cParams.x,2);   
+            obj.totalNumDOF  = obj.numNodes*obj.numDOFNode;  
         end
 
-        function NodalConnectivitiesInit(obj)
-            obj.NumElem = size(obj.Tn,1); % Number of elements 
-            obj.NumNodesBar = size(obj.Tn,2); % Number of nodes in a bar
+        function initializeNodalConnectivities(obj,cParams)
+            obj.numElem       = size(cParams.Tn,1);
+            obj.numNodesBar   = size(cParams.Tn,2);
         end
 
     end

@@ -1,20 +1,27 @@
 classdef StiffnessMatrixTestClass < handle
 
-    properties (Access = private)
-        Message
+    properties (Access = public)
+        message
     end
 
     properties (Access = private)
-        K_original
-        K_test
+        tolerance
+    end
+
+    properties (Access = private)
+        KOriginal
+        KTest
     end
     
     methods (Access = public)
 
-        function Result = testResult(obj, K_class)
-            obj.init(K_class);
-            obj.CompareValues();
-            Result = obj.Message;
+        function obj = StiffnessMatrixTestClass(cParams)
+            obj.init(cParams);
+        end
+
+        function compute(obj)
+            obj.compareValues();
+            disp(obj.message);
         end
 
     end
@@ -22,18 +29,27 @@ classdef StiffnessMatrixTestClass < handle
 
     methods (Access = private)
 
-        function init(obj,K_class)
-            load("datas.mat","K");
-            obj.K_original = K;
-            obj.K_test = K_class;
+        function init(obj,cParams)
+            obj.saveInput(cParams);
+            obj.loadOriginalK();
+            obj.tolerance = 1e-6;
         end
 
-        function CompareValues(obj)
+        function saveInput(obj,cParams)
+            obj.KTest = cParams.K;
+        end
+
+        function loadOriginalK(obj)
+            load("datas.mat","K");
+            obj.KOriginal = K;
+        end
+
+        function compareValues(obj)
             try
-                assert(all(obj.K_original == obj.K_test, 'all'),'The stiffness matrix has not been assembled properly');
-                obj.Message = 'The stiffness matrix has been assembled properly.';
+                assert(all(abs(obj.KOriginal - obj.KTest) < obj.tolerance, 'all'),'The stiffness matrix has not been assembled properly');
+                obj.message = 'The stiffness matrix has been assembled properly.';
             catch ME
-                obj.Message = ME.message;
+                obj.message = ME.message;
             end
         end
     end

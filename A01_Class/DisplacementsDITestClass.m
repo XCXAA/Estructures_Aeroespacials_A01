@@ -1,24 +1,31 @@
 classdef DisplacementsDITestClass < handle
 
+    properties (Access = public)
+        comparingMethodsMessage
+        comparingValuesMessage
+    end
+
     properties (Access = private)
-        ComparingMethodsMessage
-        ComparingValuesMessage
         tolerance
     end
 
     properties (Access = private)
-        u_original
-        u_direct_test
-        u_iterative_test
+        uOriginal
+        uDirectTest
+        uIterativeTest
     end
     
     methods (Access = public)
 
-        function Result = testResult(obj, u_Direct,u_Iterative)
-            obj.init(u_Direct,u_Iterative);
-            obj.CompareMethods();
-            obj.CompareValues();
-            Result = [obj.ComparingMethodsMessage, newline, obj.ComparingValuesMessage];
+        function obj = DisplacementsDITestClass(cParams)
+            obj.init(cParams);
+        end
+
+        function compute(obj)
+            obj.compareMethods();
+            obj.compareValues();
+            result = [obj.comparingMethodsMessage, newline, obj.comparingValuesMessage];
+            disp(result);
         end
 
     end
@@ -26,29 +33,37 @@ classdef DisplacementsDITestClass < handle
 
     methods (Access = private)
 
-        function init(obj,u_Direct,u_Iterative)
-            load("datas.mat","u");
-            obj.u_original = u;
-            obj.u_iterative_test = u_Iterative;
-            obj.u_direct_test = u_Direct;
+        function init(obj,cParams)
+            obj.saveInput(cParams);
+            obj.loadOriginalU();
             obj.tolerance = 1e-6;
         end
 
-        function CompareMethods(obj)
+        function saveInput(obj,cParams)
+            obj.uIterativeTest = cParams.uIterative;
+            obj.uDirectTest    = cParams.uDirect;
+        end
+
+        function loadOriginalU(obj)
+            load("datas.mat","u");
+            obj.uOriginal = u;
+        end
+
+        function compareMethods(obj)
             try
-                assert(all(abs(obj.u_direct_test - obj.u_iterative_test) < obj.tolerance, 'all'), 'The displacements using whether a Direct or an Iterative solver are not the same.');
-                obj.ComparingMethodsMessage = 'The displacements using whether a Direct or an Iterative solver are the same.';
+                assert(all(abs(obj.uDirectTest - obj.uIterativeTest) < obj.tolerance, 'all'), 'The displacements using whether a Direct or an Iterative solver are not the same.');
+                obj.comparingMethodsMessage = 'The displacements using whether a Direct or an Iterative solver are the same.';
             catch ME
-                obj.ComparingMethodsMessage = ME.message;
+                obj.comparingMethodsMessage = ME.message;
             end
         end
 
-        function CompareValues(obj)
+        function compareValues(obj)
             try
-                assert(all(abs(obj.u_original - obj.u_iterative_test) < obj.tolerance, 'all'), 'The displacements do not have the expected value using a Direct and an Iterative solver.');
-                obj.ComparingValuesMessage = 'The displacements have the expected value using a Direct and an Iterative solver.';
+                assert(all(abs(obj.uOriginal - obj.uIterativeTest) < obj.tolerance, 'all'), 'The displacements do not have the expected value using a Direct and an Iterative solver.');
+                obj.comparingValuesMessage = 'The displacements have the expected value using a Direct and an Iterative solver.';
             catch ME
-                obj.ComparingValuesMessage = ME.message;
+                obj.comparingValuesMessage = ME.message;
             end
         end
 

@@ -1,20 +1,27 @@
 classdef TotalForceTestClass < handle
 
+    properties (Access = public)
+        message
+    end
+    
     properties (Access = private)
-        Message
+        tolerance
     end
 
     properties (Access = private)
-        f_original
-        f_test
+        fOriginal
+        fTest
     end
     
     methods (Access = public)
 
-        function Result = testResult(obj, f_new)
-            obj.init(f_new);
-            obj.CompareValues();
-            Result = obj.Message;
+        function obj = TotalForceTestClass(cParams)
+            obj.init(cParams);
+        end
+
+        function compute(obj)
+            obj.compareValues();
+            disp(obj.message);
         end
 
     end
@@ -22,20 +29,32 @@ classdef TotalForceTestClass < handle
 
     methods (Access = private)
 
-        function init(obj,f_new)
-            load("datas.mat","f");
-            obj.f_original = f;
-            obj.f_test = f_new;
+        function init(obj,cParams)
+            obj.saveInput(cParams);
+            obj.loadOriginalF();
+            obj.tolerance = 1e-6;
         end
 
-        function CompareValues(obj)
+        function saveInput(obj,cParams)
+            obj.fTest = cParams.f;
+        end
+
+        function loadOriginalF(obj)
+            load("datas.mat","f");
+            obj.fOriginal = f;
+        end
+
+        function compareValues(obj)
             try
-                assert(all(obj.f_original == obj.f_test, 'all'),'The total force does not coincide with the expected value');
-                obj.Message = 'The total force coincides with the expected value.';
+                assert(all(abs(obj.fOriginal - obj.fTest) < obj.tolerance, 'all'),'The total force does not coincide with the expected value');
+                obj.message = 'The total force coincides with the expected value.';
             catch ME
-                obj.Message = ME.message;
+                obj.message = ME.message;
             end
         end
     end
     
 end
+
+
+

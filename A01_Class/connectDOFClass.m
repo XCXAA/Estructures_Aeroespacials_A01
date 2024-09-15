@@ -1,23 +1,27 @@
 classdef connectDOFClass < handle
 
-    properties (Access = private)
+    properties (Access = public)
         Td
     end
 
     properties (Access = private)
-        NumDOFNode
-        NumElem
-        NumNodesBar
-        Aux
+        numDOFNode
+        numElem
+        numNodesBar
+        aux
         Tn
     end
     
     methods (Access = public)
 
-        function Result = CreateTd(obj, data, Tn)
-            obj.init(data,Tn);
-            obj.ComputeTd();
-            Result = obj.Td;
+        function obj = connectDOFClass(cParams)
+            obj.init(cParams);
+        end
+
+        function compute(obj)
+            for iNumElem = 1:obj.numElem
+                obj.computeAllRowValues(iNumElem);        
+            end
         end
 
     end
@@ -25,35 +29,36 @@ classdef connectDOFClass < handle
 
     methods (Access = private)
 
-        function init(obj,data, Tn)
-            obj.NumDOFNode = data.NumDOFNode;
-            obj.NumElem = data.NumElem;
-            obj.NumNodesBar = data.NumNodesBar;
-            obj.Aux = data.NumDOFNode;
-            obj.Td = zeros(data.NumElem,2*data.NumDOFNode);
-            obj.Tn = Tn;
+        function init(obj,cParams)
+            obj.saveInputs(cParams)
+            obj.createTd();
         end
 
-        function ComputeTd(obj)
-            for iNumElem = 1:obj.NumElem
+        function saveInputs(obj,cParams)
+            obj.numDOFNode   = cParams.data.numDOFNode;
+            obj.numElem      = cParams.data.numElem;
+            obj.numNodesBar  = cParams.data.numNodesBar;
+            obj.aux          = cParams.data.numDOFNode;
+            obj.Tn           = cParams.Tn; 
+        end
 
-                for jNumNodesBar = 1:obj.NumNodesBar
+        function createTd(obj)
+            obj.Td = zeros(obj.numElem,2*obj.numDOFNode);
+        end
 
-                    obj.Aux = obj.NumDOFNode - 1;
-                    obj.Td(iNumElem,obj.NumDOFNode*jNumNodesBar) = obj.NumDOFNode*obj.Tn(iNumElem,jNumNodesBar);
-
-                    for iAux= 0:obj.Aux
-
-                        obj.Td(iNumElem,obj.NumDOFNode*jNumNodesBar-iAux) = obj.NumDOFNode*obj.Tn(iNumElem,jNumNodesBar)- iAux;
-                    end
-
-                end
-                    
+        function defineRestRowValues(obj,iNumElem,jNumNodesBar)
+            for iAux = 0:obj.aux
+                obj.Td(iNumElem,obj.numDOFNode*jNumNodesBar-iAux) = obj.numDOFNode*obj.Tn(iNumElem,jNumNodesBar)- iAux;
             end
-
         end
-    
-    end
 
+        function computeAllRowValues(obj,iNumElem)
+            for jNumNodesBar = 1:obj.numNodesBar
+                obj.aux                                      = obj.numDOFNode - 1;
+                obj.Td(iNumElem,obj.numDOFNode*jNumNodesBar) = obj.numDOFNode*obj.Tn(iNumElem,jNumNodesBar);
+                obj.defineRestRowValues(iNumElem,jNumNodesBar);
+            end
+        end
+    end
 
 end

@@ -15,7 +15,7 @@ classdef IterativeSolver < Solver
             obj.init(cParams)
         end
 
-        function uL = computeSolution(obj)
+        function uL = compute(obj)
             obj.solveEquationIteratively();
             uL = obj.solution;
         end

@@ -15,7 +15,7 @@ classdef DirectSolver < Solver
             obj.init(cParams);
         end
 
-        function uL = computeSolution(obj)
+        function uL = compute(obj)
             obj.solveEquationDirectly();
             uL = obj.solution;
         end

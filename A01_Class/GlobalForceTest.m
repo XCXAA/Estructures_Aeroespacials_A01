@@ -1,4 +1,4 @@
-%% Total force test
+%% Global force test
 
 clear
 close all
@@ -75,7 +75,7 @@ frameInput.p                = pframe;
 frameInput.F                = Fframe;
 frameInput.solvertype       = "Direct";
 
-newMainObjectDirect = NewMainClass(frameInput);
+newMainObjectDirect = ProblemComputer(frameInput);
 newMainObjectDirect.compute();
 
 %% 3) Test
@@ -87,8 +87,8 @@ load("datas.mat","f")
 tolerance = 1e-6;
 
 % Test to ensure that the total force coincides with the expected value.
-assert(all(abs(newMainObjectDirect.outputs.f - f) < tolerance, 'all'),'The total force does not coincide with the expected value')
+assert(all(abs(newMainObjectDirect.outputs.f - f) < tolerance, 'all'),'The global force does not coincide with the expected value')
 
 % Test following an object-oriented approach
-totalForceTest = TotalForceTestClass(newMainObjectDirect.outputs);
+totalForceTest = GlobalForceTestComputer(newMainObjectDirect.outputs);
 totalForceTest.compute();

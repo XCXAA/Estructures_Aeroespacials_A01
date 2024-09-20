@@ -1,4 +1,4 @@
-classdef ForceVectorClass < handle
+classdef GlobalForceVectorComputer < handle
 
     properties (Access = public)
         f
@@ -16,13 +16,12 @@ classdef ForceVectorClass < handle
     
     methods (Access = public)
 
-        function obj = ForceVectorClass(cParams)
+        function obj = GlobalForceVectorComputer(cParams)
             obj.init(cParams); 
         end
 
-        function computeForceVector(obj)
-           obj.calculateInitialf();
-           obj.setPointLoad();
+        function compute(obj)
+            obj.computeGlobalForceVector();
         end
 
     end
@@ -59,9 +58,14 @@ classdef ForceVectorClass < handle
 
         function setPointLoad(obj)
             for in = 1:obj.n
-                I        = nod2dofClass.returnI(obj.numDOFNode,obj.F(in,1),obj.F(in,2));
+                I        = nod2dofComputer.returnI(obj.numDOFNode,obj.F(in,1),obj.F(in,2));
                 obj.f(I) = obj.F(in,3);
             end 
+        end
+
+        function computeGlobalForceVector(obj)
+           obj.calculateInitialf();
+           obj.setPointLoad();
         end
 
     end

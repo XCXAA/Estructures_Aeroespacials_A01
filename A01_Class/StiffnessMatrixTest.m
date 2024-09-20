@@ -75,7 +75,7 @@ frameInput.p                = pframe;
 frameInput.F                = Fframe;
 frameInput.solvertype       = "Direct";
 
-newMainObjectDirect = NewMainClass(frameInput);
+newMainObjectDirect = ProblemComputer(frameInput);
 newMainObjectDirect.compute();
 
 %% 3) Test
@@ -88,8 +88,8 @@ load("datas.mat","K");
 tolerance = 1e-6;
 
 % Test to ensure that the stiffness matrix has been assembled properly.
-assert(all(abs(K - newMainObjectDirect.outputs.K) < tolerance, 'all'),'The stiffness matrix has not been assembled properly')
+assert(all(abs(K - newMainObjectDirect.outputs.K) < tolerance, 'all'),'The global stiffness matrix has not been assembled properly')
 
 % Test following an object-oriented approach
-stiffnessMatrixTest = StiffnessMatrixTestClass(newMainObjectDirect.outputs);
+stiffnessMatrixTest = StiffnessMatrixTestComputer(newMainObjectDirect.outputs);
 stiffnessMatrixTest.compute();

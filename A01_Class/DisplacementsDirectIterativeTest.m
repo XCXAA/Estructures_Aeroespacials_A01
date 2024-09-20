@@ -76,12 +76,12 @@ frameInput.F                = Fframe;
 
 % Direct method
 frameInput.solvertype       = "Direct";
-newMainObjectDirect         = NewMainClass(frameInput);
+newMainObjectDirect         = ProblemComputer(frameInput);
 newMainObjectDirect.compute();
 
 % Iterative method
 frameInput.solvertype       = "Iterative";
-newMainObjectIterative      = NewMainClass(frameInput);
+newMainObjectIterative      = ProblemComputer(frameInput);
 newMainObjectIterative.compute();
 
 %% 3) Test
@@ -102,5 +102,5 @@ assert(all(abs(u - newMainObjectDirect.outputs.u) < tol, 'all'), 'The displaceme
 displacementsTestInput.uDirect       = newMainObjectDirect.outputs.u;
 displacementsTestInput.uIterative    = newMainObjectIterative.outputs.u;
 
-displacementsDITest = DisplacementsDITestClass(displacementsTestInput);
+displacementsDITest = DisplacementsDITestComputer(displacementsTestInput);
 displacementsDITest.compute();

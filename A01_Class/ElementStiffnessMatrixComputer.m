@@ -1,4 +1,4 @@
-classdef ElementStiffnessMatrixClass < handle
+classdef ElementStiffnessMatrixComputer < handle
 
    properties (Access = public)
         KElem
@@ -25,18 +25,12 @@ classdef ElementStiffnessMatrixClass < handle
     
     methods (Access = public)
 
-        function obj = ElementStiffnessMatrixClass(cParams)
+        function obj = ElementStiffnessMatrixComputer(cParams)
             obj.init(cParams);
         end
 
-        function computeElementStiffnessMatrix(obj)
-            for iNumElem =1:obj.numElem
-            obj.initializeKLocal(iNumElem);
-            obj.intializeLR();
-            RInvert                 =  obj.R';
-            obj.KLocal              =  (obj.m(obj.Tm(iNumElem),1)*obj.m(obj.Tm(iNumElem),2)/obj.l)*obj.KLocal;
-            obj.KElem(:,:,iNumElem) =  RInvert*obj.KLocal*obj.R;
-            end
+        function compute(obj)
+            obj.computeElementStiffnessMatrix();
         end
 
     end
@@ -86,6 +80,17 @@ classdef ElementStiffnessMatrixClass < handle
             obj.l = sqrt(obj.l);
             obj.R = (1/obj.l)*obj.R;
         end
+        
+        function computeElementStiffnessMatrix(obj)
+            for iNumElem =1:obj.numElem
+            obj.initializeKLocal(iNumElem);
+            obj.intializeLR();
+            RInvert                 =  obj.R';
+            obj.KLocal              =  (obj.m(obj.Tm(iNumElem),1)*obj.m(obj.Tm(iNumElem),2)/obj.l)*obj.KLocal;
+            obj.KElem(:,:,iNumElem) =  RInvert*obj.KLocal*obj.R;
+            end
+        end
+
 
     end
 

@@ -1,4 +1,4 @@
-classdef NewMainClass < handle
+classdef ProblemComputer < handle
 
     properties (Access = public)
         outputs
@@ -23,7 +23,7 @@ classdef NewMainClass < handle
 
     methods (Access = public)
 
-        function obj = NewMainClass(cParams)
+        function obj = ProblemComputer(cParams)
             obj.init(cParams); 
         end
 
@@ -46,72 +46,72 @@ classdef NewMainClass < handle
         end
 
         function initializeData(obj)
-            dataObject = DataClass(obj.inputs);
+            dataObject = DataComputer(obj.inputs);
             obj.inputs.data = dataObject;
         end
 
         function createTd(obj)
-            TdClass = connectDOFClass(obj.inputs);
-            TdClass.compute();
-            obj.inputs.Td = TdClass.Td;
+            TdObject = DOFConnectivitiesComputer(obj.inputs);
+            TdObject.compute();
+            obj.inputs.Td = TdObject.Td;
         end
 
         function computeElementStiffnessMatrix(obj)
-            KElemClass = ElementStiffnessMatrixClass(obj.inputs);
-            KElemClass.computeElementStiffnessMatrix;
-            obj.KElem = KElemClass.KElem;
+            KElemObject = ElementStiffnessMatrixComputer(obj.inputs);
+            KElemObject.compute();
+            obj.KElem = KElemObject.KElem;
             obj.inputs.KElem = obj.KElem;
         end
 
         function assemblyGlobalStiffnessMatrix(obj)
-            KClass = StiffnessMatrixClass(obj.inputs);
-            KClass.assemblyGlobalStiffnessMatrix();
-            obj.K = KClass.KGlobal;
+            KObject = GlobalStiffnessMatrixComputer(obj.inputs);
+            KObject.compute();
+            obj.K = KObject.KGlobal;
             obj.inputs.K = obj.K;
         end
 
         function computeElementForceVector(obj)
-            fElemClass = ElementForceVectorClass(obj.inputs);
-            fElemClass.computeElementForceVector();
-            obj.fElem = fElemClass.fElem;
+            fElemObject = ElementForceVectorComputer(obj.inputs);
+            fElemObject.compute();
+            obj.fElem = fElemObject.fElem;
             obj.inputs.fElem = obj.fElem;
         end
 
-        function computeForceVector(obj)
-            fClass = ForceVectorClass(obj.inputs);
-            fClass.computeForceVector();
-            obj.f = fClass.f;
+        function computeGlobalForceVector(obj)
+            fObject = GlobalForceVectorComputer(obj.inputs);
+            fObject.compute();
+            obj.f = fObject.f;
             obj.inputs.f = obj.f;
         end
 
         function applyBC(obj)
-            UpVpClass = ApplyBC(obj.inputs);
-            UpVpClass.compute();
-            obj.up = UpVpClass.up;
-            obj.vp = UpVpClass.vp;
+            UpVpObject = BCApplier(obj.inputs);
+            UpVpObject.compute();
+            obj.up = UpVpObject.up;
+            obj.vp = UpVpObject.vp;
             obj.inputs.up = obj.up;
             obj.inputs.vp = obj.vp;
         end
 
         function solveSystem(obj)
-            UVClass = SolveSystemClass(obj.inputs);
-            UVClass.computeSolution();
-            obj.u = UVClass.u;
-            obj.r = UVClass.r;
+            UVObject = SystemSolver(obj.inputs);
+            UVObject.compute();
+            obj.u = UVObject.u;
+            obj.r = UVObject.r;
             obj.inputs.u = obj.u;
         end
 
         function calculateStress(obj)
-            SigClass = StressFunctionClass(obj.inputs);
-            SigClass.computeStress();
-            obj.sig = SigClass.sig;
+            SigObject = StressComputer(obj.inputs);
+            SigObject.compute();
+            obj.sig = SigObject.sig;
         end
 
         function solve(obj)
             obj.computeElementStiffnessMatrix();
             obj.assemblyGlobalStiffnessMatrix();
             obj.computeElementForceVector();
-            obj.computeForceVector();
+            obj.computeGlobalForceVector();
             obj.applyBC();
             obj.solveSystem();
             obj.calculateStress();

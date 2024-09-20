@@ -7,6 +7,8 @@
 % FET - Fer dues classes separades per Kelem i Kassembly
 % FET - Apply BC com una classe separada
 % FET - Aplicar clean code rules de la wiki de Swan a totes les class (only public methods: constructor + compute)
+% FET - Canviar el nom de Newmainclass
+% FET - Segona funció de class -> compute
 
 clear
 %close all
@@ -84,23 +86,23 @@ frameInput.F                = Fframe;
 
 % Direct method
 frameInput.solvertype       = "Direct";
-newMainObjectDirect = NewMainClass(frameInput);
+newMainObjectDirect = ProblemComputer(frameInput);
 newMainObjectDirect.compute();
 
 % Iterative method
 frameInput.solvertype       = "Iterative";
-newMainObjectIterative = NewMainClass(frameInput);
+newMainObjectIterative = ProblemComputer(frameInput);
 newMainObjectIterative.compute();
 
 %% 3) Test
 
 % Test to ensure that the stiffness matrix has been assembled properly.
-stiffnessMatrixTest = StiffnessMatrixTestClass(newMainObjectDirect.outputs);
+stiffnessMatrixTest = StiffnessMatrixTestComputer(newMainObjectDirect.outputs);
 stiffnessMatrixTest.compute();
 
 %Test to ensure that the total force coincides with the expected value.
-totalForceTest = TotalForceTestClass(newMainObjectDirect.outputs);
-totalForceTest.compute();
+globalForceTest = GlobalForceTestComputer(newMainObjectDirect.outputs);
+globalForceTest.compute();
 
 % Test to check if the displacements using whether a Direct or an Iterative
 % solver are the same.
@@ -108,9 +110,9 @@ totalForceTest.compute();
 displacementsTestInput.uDirect       = newMainObjectDirect.outputs.u;
 displacementsTestInput.uIterative    = newMainObjectIterative.outputs.u;
 
-displacementsDITest = DisplacementsDITestClass(displacementsTestInput);
+displacementsDITest = DisplacementsDITestComputer(displacementsTestInput);
 displacementsDITest.compute();
 
 % Test to ensure that the total force coincides with the expected value.
-sigmaTestClass = SigmaTestClass(newMainObjectDirect.outputs);
+sigmaTestClass = SigmaTestComputer(newMainObjectDirect.outputs);
 sigmaTestClass.compute();

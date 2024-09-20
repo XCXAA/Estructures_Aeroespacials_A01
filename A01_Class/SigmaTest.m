@@ -75,7 +75,7 @@ frameInput.p                = pframe;
 frameInput.F                = Fframe;
 frameInput.solvertype       = "Direct";
 
-newMainObjectDirect = NewMainClass(frameInput);
+newMainObjectDirect = ProblemComputer(frameInput);
 newMainObjectDirect.compute();
 
 %% 3) Test
@@ -89,5 +89,5 @@ tol = 1e-6; % Define a small tolerance
 assert(all(newMainObjectDirect.outputs.sig - sig < tol, 'all'),'The sigma does not coincide with the expected value')
 
 % Test following an object-oriented approach
-sigmaTestClass = SigmaTestClass(newMainObjectDirect.outputs);
+sigmaTestClass = SigmaTestComputer(newMainObjectDirect.outputs);
 sigmaTestClass.compute();

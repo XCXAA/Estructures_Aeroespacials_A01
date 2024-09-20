@@ -1,4 +1,4 @@
-classdef ApplyBC < handle
+classdef BCApplier < handle
 
     properties (Access = public)
         up
@@ -16,7 +16,7 @@ classdef ApplyBC < handle
     
     methods (Access = public)
 
-        function obj = ApplyBC(cParams)
+        function obj = BCApplier(cParams)
             obj.init(cParams);
         end
 
@@ -47,7 +47,7 @@ classdef ApplyBC < handle
 
         function applyBC(obj)
              for iNumRowsp = 1:obj.numRowsp
-                obj.vp(iNumRowsp) = nod2dofClass.returnI(obj.numDOFNode,obj.p(iNumRowsp,1),obj.p(iNumRowsp,2));
+                obj.vp(iNumRowsp) = nod2dofComputer.returnI(obj.numDOFNode,obj.p(iNumRowsp,1),obj.p(iNumRowsp,2));
                 obj.up(iNumRowsp) = obj.p(iNumRowsp,3);
             end 
         end

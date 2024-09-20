@@ -1,4 +1,4 @@
-classdef ElementForceVectorClass < handle
+classdef ElementForceVectorComputer < handle
 
     properties (Access = public)
        fElem
@@ -24,14 +24,12 @@ classdef ElementForceVectorClass < handle
     
     methods (Access = public)
 
-        function obj = ElementForceVectorClass(cParams)
+        function obj = ElementForceVectorComputer(cParams)
             obj.init(cParams);
         end
 
-        function computeElementForceVector(obj)
-            for iNumElem = 1:obj.numElem
-                obj.definefElemPerElem(iNumElem);
-            end
+        function compute(obj)
+            obj.computeElementForceVector();
         end
 
     end
@@ -85,6 +83,12 @@ classdef ElementForceVectorClass < handle
                 obj.calculateLK(iNumElem);
                 RInvert               = obj.R';
                 obj.fElem(:,iNumElem) = RInvert*obj.K;
+            end
+        end
+
+        function computeElementForceVector(obj)
+            for iNumElem = 1:obj.numElem
+                obj.definefElemPerElem(iNumElem);
             end
         end
 
